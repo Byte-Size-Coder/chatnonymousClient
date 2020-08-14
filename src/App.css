@@ -1,0 +1,45 @@
+.roomHeader {
+  position: fixed;
+}
+.scenario-container {
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  margin-top: 75px;
+  max-height: 80%;
+  overflow: auto;
+}
+.scenario-message {
+  color: white;
+  width: 80%;
+  margin: 2px;
+  padding: 1em;
+  font-size: smaller;
+  font-weight: bold;
+}
+
+.sent {
+  align-items: flex-start;
+}
+
+.received {
+  align-items: flex-end;
+}
+
+.chatText {
+  margin-left: 10px;
+}
+
+.signIn {
+  padding-top: 10px;
+  padding-bottom: 20px;
+  margin-bottom: 30px;
+  border: 1px solid black;
+  display: block;
+}
+
+@media screen and (max-width: 680px) {
+  .chatText {
+    display: none;
+  }
+}
