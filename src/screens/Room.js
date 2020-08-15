@@ -1,11 +1,46 @@
 import React, { useRef, useReducer, useEffect, useCallback } from "react";
-import { ThemeProvider as MultiThemeProvider } from "@material-ui/core/styles";
+import {
+  ThemeProvider as MultiThemeProvider,
+  makeStyles,
+} from "@material-ui/core/styles";
 import cryptoRandomString from "crypto-random-string";
-import { Typography, TextField } from "@material-ui/core";
+import { Typography, TextField, Modal, Button } from "@material-ui/core";
 import theme from "../styles/theme";
+
+import copy from "copy-to-clipboard";
 
 import Header from "../components/Header";
 import Message from "../components/Message";
+
+const useStyles = makeStyles((theme) => ({
+  modal: {
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  paper: {
+    width: 200,
+    backgroundColor: theme.palette.background.paper,
+    border: "2px solid #000",
+    boxShadow: theme.shadows[5],
+    padding: theme.spacing(2, 4, 3),
+    textAlign: "center",
+  },
+  modalButtons: {
+    display: "flex",
+    flexDirection: "column",
+    height: 80,
+    justifyContent: "space-between",
+    alignItems: "center",
+  },
+  chatText: {
+    position: "fixed",
+    bottom: 0,
+    marginBottom: 20,
+    width: "90%",
+    marginLeft: 20,
+  },
+}));
 
 const Room = (props) => {
   const initialState = {
@@ -18,10 +53,13 @@ const Room = (props) => {
     userId: "",
     typingMessage: "",
     errorMessage: "",
+    modalOpen: false,
   };
 
   const isTyping = useRef(false);
   const messagesEnd = useRef(null);
+
+  const classes = useStyles();
 
   const reducer = (state, newState) => ({ ...state, ...newState });
   const [state, setState] = useReducer(reducer, initialState);
@@ -73,8 +111,6 @@ const Room = (props) => {
     props.socket.emit("leaveRoom");
   };
 
-  const inviteHandler = () => {};
-
   const onMessageChange = (e) => {
     setState({ userMessage: e.target.value });
 
@@ -121,6 +157,30 @@ const Room = (props) => {
     setState({ typingMessage: typeMessage });
   }, []);
 
+  const openModalHandler = () => {
+    setState({ modalOpen: true });
+  };
+
+  const closeModalHandler = () => {
+    setState({ modalOpen: false });
+  };
+
+  const inviteEmail = () => {
+    const link = window.location.href;
+    const subject = encodeURI("Chatnonymous Room Invite");
+    const body = encodeURI(
+      `You have been invited to a Chatnonmyous Room with the topic: ${state.roomTopic}\n\nClick the following link to enter the room:\n${link}\n\nFrom,\nChatnonymous Team`
+    );
+    const mail = `mailto:?subject=${subject}&body=${body}`;
+
+    window.open(mail);
+  };
+
+  const copyLink = () => {
+    const link = window.location.href;
+    copy(link);
+  };
+
   const socketCommands = useCallback(() => {
     props.socket.on("roomJoined", roomJoinedHandler);
     props.socket.on("failedJoined", failedJoinHandler);
@@ -154,7 +214,7 @@ const Room = (props) => {
         <Header
           users={state.users}
           onLeave={roomLeaveHander}
-          onInvite={inviteHandler}
+          onOpenModal={openModalHandler}
         />
       ) : (
         <Header />
@@ -169,7 +229,7 @@ const Room = (props) => {
           />
         ))}
       </div>
-
+      <div style={{ float: "left", clear: "both" }} ref={messagesEnd}></div>
       <div>
         <Typography color="primary">{state.typingMessage}</Typography>
       </div>
@@ -178,11 +238,37 @@ const Room = (props) => {
         onChange={onMessageChange}
         placeholder="type something here"
         autoFocus={true}
-        style={{ marginTop: 20, width: "90%", marginLeft: 20 }}
+        className={classes.chatText}
         value={state.userMessage}
         onKeyPress={(e) => (e.key === "Enter" ? handleSendMessage() : null)}
       />
-      <div style={{ float: "left", clear: "both" }} ref={messagesEnd}></div>
+
+      <Modal
+        open={state.modalOpen}
+        onClose={closeModalHandler}
+        className={classes.modal}
+      >
+        <div className={classes.paper}>
+          <h2>Room Code {state.roomCode}</h2>
+          <p>{window.location.href}</p>
+          <div className={classes.modalButtons}>
+            <Button
+              variant="contained"
+              color="primary"
+              onClick={() => inviteEmail()}
+            >
+              Email Link
+            </Button>
+            <Button
+              variant="contained"
+              color="primary"
+              onClick={() => copyLink()}
+            >
+              Copy Link
+            </Button>
+          </div>
+        </div>
+      </Modal>
     </MultiThemeProvider>
   );
 };

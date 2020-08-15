@@ -32,6 +32,10 @@ const CreateRoom = (props) => {
     setRoomCode(cryptoRandomString({ length: 10, type: "url-safe" }));
   };
 
+  const goToHome = () => {
+    props.history.push("/");
+  };
+
   const handleGenerateRoom = () => {
     const roomQuery = encodeURIComponent(`${roomCode}`);
     props.socket.emit("createRoom", {
@@ -72,6 +76,7 @@ const CreateRoom = (props) => {
                       value={roomTopic}
                       placeholder="Enter your Room Topic"
                       fullWidth={true}
+                      autoFocus={true}
                     />
                   </Grid>
                 </Grid>
@@ -81,13 +86,39 @@ const CreateRoom = (props) => {
                       variant="contained"
                       color="primary"
                       onClick={() => handleGenerateRoom()}
+                      disabled={roomTopic === ""}
                     >
                       Generate Room
                     </Button>
                   </Grid>
                 </Grid>
+                <Grid container justify="center" style={{ marginTop: 20 }}>
+                  <Grid item xs={8} sm={6}>
+                    <Button
+                      variant="contained"
+                      color="primary"
+                      onClick={() => goToHome()}
+                    >
+                      Back to Home
+                    </Button>
+                  </Grid>
+                </Grid>
               </CardContent>
             </Card>
+            <Grid container justify="center" style={{ marginTop: 20 }}>
+              <Grid item xs={10} sm={8} style={{ textAlign: "center" }}>
+                <p>
+                  Create a room to begin your conversations! Label your topic of
+                  discussion and enter the room. Invite more users with the
+                  invite button (top right corner) when you enter the room.
+                </p>
+                <p>
+                  Each user will be assigned a unique colour. When all users
+                  leave, the room will be terminated. No information is recorded
+                  or saved.
+                </p>
+              </Grid>
+            </Grid>
           </Grid>
         </Grid>
       </Fragment>
