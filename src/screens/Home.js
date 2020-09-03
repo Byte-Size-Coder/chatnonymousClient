@@ -26,19 +26,20 @@ const Home = (props) => {
   };
 
   const handleRoomJoin = () => {
+    const queyParam = encodeURIComponent("code");
     const roomQuery = encodeURIComponent(`${code}`);
-    props.history.push(`/room?${roomQuery}`);
+    props.history.push(`/room?${queyParam}=${roomQuery}`);
   };
 
   return (
     <MultiThemeProvider theme={theme}>
       <Header />
-      <Grid container justify="center">
+      <Grid container justify='center'>
         <Grid item xs={10} sm={8} lg={6}>
           <Card style={{ marginTop: 20 }}>
             <CardHeader
-              title="Room Control"
-              color="inherit"
+              title='Room Control'
+              color='inherit'
               style={{ textAlign: "center" }}
             />
 
@@ -46,21 +47,21 @@ const Home = (props) => {
               <img
                 src={chatDark}
                 style={{ maxWidth: "200px", marginBottom: 20 }}
-                alt="Chatnonymous Logo"
+                alt='Chatnonymous Logo'
               />
-              <Grid container justify="center">
+              <Grid container justify='center'>
                 <Grid item xs={6} sm={4}>
                   <TextField
                     onChange={onRoomCodeChange}
                     value={code}
-                    placeholder="Enter Room Code"
+                    placeholder='Enter Room Code'
                     autoFocus={true}
                   />
                 </Grid>
                 <Grid item xs={6} sm={4}>
                   <Button
-                    variant="contained"
-                    color="primary"
+                    variant='contained'
+                    color='primary'
                     onClick={() => handleRoomJoin()}
                     disabled={code === ""}
                   >
@@ -68,11 +69,11 @@ const Home = (props) => {
                   </Button>
                 </Grid>
               </Grid>
-              <Grid container justify="center" style={{ marginTop: 20 }}>
+              <Grid container justify='center' style={{ marginTop: 20 }}>
                 <Grid item xs={8} sm={6}>
                   <Button
-                    variant="contained"
-                    color="primary"
+                    variant='contained'
+                    color='primary'
                     onClick={() => goToCreateRoom()}
                   >
                     Create New Room
@@ -81,7 +82,7 @@ const Home = (props) => {
               </Grid>
             </CardContent>
           </Card>
-          <Grid container justify="center" style={{ marginTop: 20 }}>
+          <Grid container justify='center' style={{ marginTop: 20 }}>
             <Grid item xs={10} sm={8} style={{ textAlign: "center" }}>
               <h1> Welcome!</h1>
               <p>

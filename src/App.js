@@ -6,8 +6,8 @@ import Home from "./screens/Home";
 import CreateRoom from "./screens/CreateRoom";
 import Room from "./screens/Room";
 
-const socket = io.connect("localhost:5000", { forceNew: true });
-//const socket = io();
+//const socket = io.connect("localhost:5000", { forceNew: true });
+const socket = io();
 
 const App = () => {
   return (
@@ -15,15 +15,15 @@ const App = () => {
       <Switch>
         <Route
           exact
-          path="/"
+          path='/'
           render={(props) => <Home {...props} socket={socket} />}
         />
         <Route
-          path="/create-room"
+          path='/create-room'
           render={(props) => <CreateRoom {...props} socket={socket} />}
         />
         <Route
-          path="/room"
+          path='/room'
           render={(props) => <Room {...props} socket={socket} />}
         />
       </Switch>

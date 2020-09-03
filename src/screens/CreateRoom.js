@@ -37,54 +37,55 @@ const CreateRoom = (props) => {
   };
 
   const handleGenerateRoom = () => {
+    const queyParam = encodeURIComponent("code");
     const roomQuery = encodeURIComponent(`${roomCode}`);
     props.socket.emit("createRoom", {
       code: roomCode,
       topic: roomTopic,
     });
-    props.history.push(`/room?${roomQuery}`);
+    props.history.push(`/room?${queyParam}=${roomQuery}`);
   };
 
   return (
     <MultiThemeProvider theme={theme}>
       <Fragment>
         <Header />
-        <Grid container justify="center">
+        <Grid container justify='center'>
           <Grid item xs={10} sm={8} lg={6}>
             <Card style={{ marginTop: 20 }}>
               <CardHeader
-                title="Create a Room"
-                color="inherit"
+                title='Create a Room'
+                color='inherit'
                 style={{ textAlign: "center" }}
               />
               <CardContent style={{ textAlign: "center" }}>
                 <img
                   src={chatDark}
                   style={{ maxWidth: "200px", marginBottom: 20 }}
-                  alt="Chatnonymous Logo"
+                  alt='Chatnonymous Logo'
                 />
-                <Grid container justify="center">
+                <Grid container justify='center'>
                   <Grid item xs={6} sm={4}>
                     <h2>Your room code is</h2>
                     <h3>{roomCode}</h3>
                   </Grid>
                 </Grid>
-                <Grid container justify="center">
+                <Grid container justify='center'>
                   <Grid item xs={6} sm={4}>
                     <TextField
                       onChange={onRoomTopicChange}
                       value={roomTopic}
-                      placeholder="Enter your Room Topic"
+                      placeholder='Enter your Room Topic'
                       fullWidth={true}
                       autoFocus={true}
                     />
                   </Grid>
                 </Grid>
-                <Grid container justify="center" style={{ marginTop: 20 }}>
+                <Grid container justify='center' style={{ marginTop: 20 }}>
                   <Grid item xs={8} sm={6}>
                     <Button
-                      variant="contained"
-                      color="primary"
+                      variant='contained'
+                      color='primary'
                       onClick={() => handleGenerateRoom()}
                       disabled={roomTopic === ""}
                     >
@@ -92,11 +93,11 @@ const CreateRoom = (props) => {
                     </Button>
                   </Grid>
                 </Grid>
-                <Grid container justify="center" style={{ marginTop: 20 }}>
+                <Grid container justify='center' style={{ marginTop: 20 }}>
                   <Grid item xs={8} sm={6}>
                     <Button
-                      variant="contained"
-                      color="primary"
+                      variant='contained'
+                      color='primary'
                       onClick={() => goToHome()}
                     >
                       Back to Home
@@ -105,7 +106,7 @@ const CreateRoom = (props) => {
                 </Grid>
               </CardContent>
             </Card>
-            <Grid container justify="center" style={{ marginTop: 20 }}>
+            <Grid container justify='center' style={{ marginTop: 20 }}>
               <Grid item xs={10} sm={8} style={{ textAlign: "center" }}>
                 <p>
                   Create a room to begin your conversations! Label your topic of

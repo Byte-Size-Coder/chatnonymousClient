@@ -33,12 +33,35 @@ const useStyles = makeStyles((theme) => ({
     justifyContent: "space-between",
     alignItems: "center",
   },
-  chatText: {
+  inputContainer: {
     position: "fixed",
+    marginTop: 30,
     bottom: 0,
     marginBottom: 20,
-    width: "90%",
+    width: "100%",
     marginLeft: 20,
+    backgroundColor: "white",
+  },
+  chatText: {
+    width: "90%",
+    position: "relative",
+  },
+  scenarioContainer: {
+    display: "flex",
+    alignItems: "center",
+    flexDirection: "column",
+    marginTop: "75px",
+    maxHeight: "80%",
+    marginBottom: "75px",
+    overflow: "auto",
+  },
+  noRoom: {
+    display: "flex",
+    flexDirection: "column",
+    justifyContent: "center",
+    alignItems: "center",
+    height: "100%",
+    width: "100%",
   },
 }));
 
@@ -65,11 +88,18 @@ const Room = (props) => {
   const [state, setState] = useReducer(reducer, initialState);
 
   const handleRoomCode = useCallback(() => {
-    const query = props.location.search.substr(1);
+    //const query = props.location.search.substr(1);
+    const query = new URLSearchParams(props.location.search);
+    let roomCode = "";
+    for (let param of query.entries()) {
+      if (param[0] === "code") {
+        roomCode = param[1];
+      }
+    }
 
     const idForUser = cryptoRandomString({ length: 10, type: "url-safe" });
 
-    props.socket.emit("joinRoom", { code: query, userId: idForUser });
+    props.socket.emit("joinRoom", { code: roomCode, userId: idForUser });
   }, [props]);
 
   const roomJoinedHandler = useCallback(
@@ -127,7 +157,7 @@ const Room = (props) => {
 
   // enter key handler to send message
   const handleSendMessage = (e) => {
-    if (props.userMessage !== "") {
+    if (state.userMessage !== "") {
       props.socket.emit("message", { text: state.userMessage }, (err) => {});
       props.socket.emit("typing", { isTyping: false }, (err) => {});
       setState({ isTyping: false, userMessage: "" });
@@ -200,7 +230,8 @@ const Room = (props) => {
   ]);
 
   useEffect(() => {
-    messagesEnd.current.scrollIntoView({ behavior: "smooth" });
+    if (state.hasJoined)
+      messagesEnd.current.scrollIntoView({ behavior: "smooth" });
   });
 
   useEffect(() => {
@@ -211,64 +242,75 @@ const Room = (props) => {
   return (
     <MultiThemeProvider theme={theme}>
       {state.hasJoined ? (
-        <Header
-          users={state.users}
-          onLeave={roomLeaveHander}
-          onOpenModal={openModalHandler}
-        />
-      ) : (
-        <Header />
-      )}
-
-      <div className="scenario-container">
-        {state.messages.map((message, index) => (
-          <Message
-            msg={message}
-            key={index}
-            isSent={message.userId === state.userId}
+        <React.Fragment>
+          <Header
+            users={state.users}
+            onLeave={roomLeaveHander}
+            onOpenModal={openModalHandler}
           />
-        ))}
-      </div>
-      <div style={{ float: "left", clear: "both" }} ref={messagesEnd}></div>
-      <div>
-        <Typography color="primary">{state.typingMessage}</Typography>
-      </div>
-      <TextField
-        variant="outlined"
-        onChange={onMessageChange}
-        placeholder="type something here"
-        autoFocus={true}
-        className={classes.chatText}
-        value={state.userMessage}
-        onKeyPress={(e) => (e.key === "Enter" ? handleSendMessage() : null)}
-      />
-
-      <Modal
-        open={state.modalOpen}
-        onClose={closeModalHandler}
-        className={classes.modal}
-      >
-        <div className={classes.paper}>
-          <h2>Room Code {state.roomCode}</h2>
-          <p>{window.location.href}</p>
-          <div className={classes.modalButtons}>
-            <Button
-              variant="contained"
-              color="primary"
-              onClick={() => inviteEmail()}
-            >
-              Email Link
-            </Button>
-            <Button
-              variant="contained"
-              color="primary"
-              onClick={() => copyLink()}
-            >
-              Copy Link
-            </Button>
+          <div className={classes.scenarioContainer}>
+            {state.messages.map((message, index) => (
+              <Message
+                msg={message}
+                key={index}
+                isSent={message.userId === state.userId}
+              />
+            ))}
           </div>
-        </div>
-      </Modal>
+          <div style={{ float: "left", clear: "both" }} ref={messagesEnd}></div>
+          <div>
+            <Typography color='primary'>{state.typingMessage}</Typography>
+          </div>
+          <div className={classes.inputContainer}>
+            <TextField
+              variant='outlined'
+              onChange={onMessageChange}
+              placeholder='type something here'
+              autoFocus={true}
+              className={classes.chatText}
+              value={state.userMessage}
+              onKeyPress={(e) =>
+                e.key === "Enter" ? handleSendMessage() : null
+              }
+            />
+          </div>
+
+          <Modal
+            open={state.modalOpen}
+            onClose={closeModalHandler}
+            className={classes.modal}
+          >
+            <div className={classes.paper}>
+              <h2>Room Code {state.roomCode}</h2>
+              <p>{window.location.href}</p>
+              <div className={classes.modalButtons}>
+                <Button
+                  variant='contained'
+                  color='primary'
+                  onClick={() => inviteEmail()}
+                >
+                  Email Link
+                </Button>
+                <Button
+                  variant='contained'
+                  color='primary'
+                  onClick={() => copyLink()}
+                >
+                  Copy Link
+                </Button>
+              </div>
+            </div>
+          </Modal>
+        </React.Fragment>
+      ) : (
+        <React.Fragment>
+          <Header />
+          <div className={classes.noRoom}>
+            <h2>No Room Found</h2>
+            <h3>Make sure you enter in the correct Room Code.</h3>
+          </div>
+        </React.Fragment>
+      )}
     </MultiThemeProvider>
   );
 };

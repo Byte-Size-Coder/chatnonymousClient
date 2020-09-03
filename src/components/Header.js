@@ -24,6 +24,12 @@ const useStyles = makeStyles((theme) => ({
     justifyContent: "space-between",
     width: "100px",
   },
+  text: {
+    marginLeft: "10px",
+    [theme.breakpoints.down("sm")]: {
+      display: "none",
+    },
+  },
 }));
 
 const Header = (props) => {
@@ -37,20 +43,20 @@ const Header = (props) => {
     users = <h4 className={classes.userTitle}>Users: {props.users}</h4>;
     buttons = (
       <Fragment>
-        <Tooltip title="Invite User" aria-label="invite-user">
+        <Tooltip title='Invite User' aria-label='invite-user'>
           <IconButton
-            edge="end"
-            color="inherit"
+            edge='end'
+            color='inherit'
             onClick={() => props.onOpenModal()}
           >
             <PersonAddIcon />
           </IconButton>
         </Tooltip>
 
-        <Tooltip title="Leave Room" aria-label="leave-room">
+        <Tooltip title='Leave Room' aria-label='leave-room'>
           <IconButton
-            edge="end"
-            color="inherit"
+            edge='end'
+            color='inherit'
             onClick={() => props.onLeave()}
           >
             <ExitToAppIcon />
@@ -65,12 +71,12 @@ const Header = (props) => {
     <MultiThemeProvider theme={theme}>
       <AppBar position={headerPos}>
         <Toolbar>
-          <img src={chatIcon} height="30px" alt="Chatnonymous Icon" />
+          <img src={chatIcon} height='30px' alt='Chatnonymous Icon' />
           <img
             src={chatText}
-            height="30px"
-            alt="Chatnonymous Text"
-            className="chatText"
+            height='30px'
+            alt='Chatnonymous Text'
+            className={classes.text}
           />
           {users}
           {buttons}
