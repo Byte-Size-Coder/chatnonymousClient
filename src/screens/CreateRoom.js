@@ -33,7 +33,7 @@ const CreateRoom = (props) => {
   };
 
   const goToHome = () => {
-    props.history.push("/");
+    props.history.push(process.env.PUBLIC_URL + "/");
   };
 
   const handleGenerateRoom = () => {
@@ -43,7 +43,9 @@ const CreateRoom = (props) => {
       code: roomCode,
       topic: roomTopic,
     });
-    props.history.push(`/room?${queyParam}=${roomQuery}`);
+    props.history.push(
+      process.env.PUBLIC_URL + `/room?${queyParam}=${roomQuery}`
+    );
   };
 
   return (

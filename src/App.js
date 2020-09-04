@@ -15,15 +15,15 @@ const App = () => {
       <Switch>
         <Route
           exact
-          path='/'
+          path={process.env.PUBLIC_URL + "/"}
           render={(props) => <Home {...props} socket={socket} />}
         />
         <Route
-          path='/create-room'
+          path={process.env.PUBLIC_URL + "/create-room"}
           render={(props) => <CreateRoom {...props} socket={socket} />}
         />
         <Route
-          path='/room'
+          path={process.env.PUBLIC_URL + "/room"}
           render={(props) => <Room {...props} socket={socket} />}
         />
       </Switch>

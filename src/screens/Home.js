@@ -22,13 +22,15 @@ const Home = (props) => {
   };
 
   const goToCreateRoom = () => {
-    props.history.push("/create-room");
+    props.history.push(process.env.PUBLIC_URL + "/create-room");
   };
 
   const handleRoomJoin = () => {
     const queyParam = encodeURIComponent("code");
     const roomQuery = encodeURIComponent(`${code}`);
-    props.history.push(`/room?${queyParam}=${roomQuery}`);
+    props.history.push(
+      process.env.PUBLIC_URL + `/room?${queyParam}=${roomQuery}`
+    );
   };
 
   return (
